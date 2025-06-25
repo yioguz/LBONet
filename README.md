@@ -88,7 +88,7 @@ def forward(self, vertices, faces, edges, feature_vector, feature_vectorP, featu
 where the layer is initialized with
 
 ```python
-self.LBONetExplicit = LBONet.layers.LBONetImplicit(16, 16, 16)
+self.LBONetImplicit = LBONet.layers.LBONetImplicit(16, 16, 16)
 ```
 
 and the numbers control the width of RiemannNet, ALBO+Net, and VoronoiNet.
