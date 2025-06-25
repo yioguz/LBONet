@@ -92,3 +92,9 @@ self.LBONetExplicit = LBONet.layers.LBONetImplicit(16, 16, 16)
 ```
 
 and the numbers control the width of RiemannNet, ALBO+Net, and VoronoiNet.
+
+
+## 📄 License
+
+This repository is licensed under the **CC BY-NC-SA 4.0 License**.  
+See the full license [here](https://creativecommons.org/licenses/by-nc-sa/4.0/).
