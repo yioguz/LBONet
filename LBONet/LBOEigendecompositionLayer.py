@@ -5,7 +5,8 @@ import numpy as np
 import scipy.sparse.linalg as lg
 
 from LBONet.helpers import tensor_hash, load_from_cache, load_from_cache2, save_to_cache, save_to_cache2
-from RiemannHelpers import plotEdges, plotFacesAnimate, get_cotan_laplacian_igl, get_anisotropic_laplacian
+from RiemannHelpers import plotEdges, plotFacesAnimate, get_cotan_laplacian_igl, get_anisotropic_laplacian, \
+    get_cotan_laplacian_igl_default
 import pyvista as pv
 
 class Spectral(torch.autograd.Function):
@@ -464,3 +465,67 @@ class Spectral(torch.autograd.Function):
                     p.show()
 
         return None, None, None, dEdgeValue.unsqueeze(1), None, None, None, None, None, None, dFaceValue1, dFaceValue2, dFaceValue3, dVertexValue.unsqueeze(1), None, None
+
+
+
+class SpectralS(torch.autograd.Function):
+
+    @staticmethod
+    def forward(ctx, vertices, edges, faces, x, el, ts, corners, minCurvature, maxCurvature, rotationNormal, anisotropy1, anisotropy2, Theta, voronoi, debug=True):
+        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
+        batch_size = vertices.shape[0]
+        vertex_count = vertices.shape[1]
+        faces_count = faces.shape[1]
+        frequency = 64
+        eps = 1e-7
+        broken=False
+        fullPrecision = False
+        if fullPrecision:
+            dtype = torch.float64
+        else:
+            dtype = torch.float32
+
+        eigvectors = torch.zeros(batch_size, vertex_count, frequency, dtype=dtype, device=device)
+        eigvalues = torch.zeros(batch_size, frequency, dtype=dtype, device=device)
+        Ab = torch.zeros(batch_size, vertex_count, vertex_count, dtype=dtype)
+        Lb = torch.zeros(batch_size, vertex_count, vertex_count, dtype=dtype)
+        vertOffset = torch.zeros(batch_size, device=device, dtype=torch.long)
+        facsOffset = torch.zeros(batch_size, device=device, dtype=torch.long)
+        edgeOffset = torch.zeros(batch_size, device=device, dtype=torch.long)
+        angles = torch.zeros(batch_size, faces_count, 3, dtype=dtype, device=device)
+        edge_length = torch.zeros(batch_size, faces_count, 3, dtype=dtype, device=device)
+
+        for i in range(batch_size):
+            # clear padding
+            vertOffset[i] = torch.where((torch.sum(vertices[i], 1) != 0)==True)[0][0]
+            facsOffset[i] = torch.where((torch.sum(faces[i], 1) != 0)==True)[0][0]
+            edgeOffset[i] = torch.where((torch.sum(edges[i], 1) != 0)==True)[0][0]
+
+            verts = vertices[i][vertOffset[i]:, :]
+            facs = faces[i][facsOffset[i]:, :]
+            edge = edges[i][edgeOffset[i]:, :]
+
+            A, L, angles[i][facsOffset[i]:], edge_length[i][facsOffset[i]:]= get_cotan_laplacian_igl_default(verts, facs, edge)
+            L = L + sparse.identity(L.shape[0]) * eps
+
+            Ab[i] = torch.tensor(np.pad(np.diag(A), (vertex_count - verts.shape[0], 0)))
+            Lb[i] = torch.tensor(np.pad(L.toarray(), (vertex_count - verts.shape[0], 0)))
+
+            (eigvalue, eigvector) = lg.eigsh(L.tocsc(), frequency+1, sparse.diags(A), sigma=-0.01)
+
+            eigvalue1 = torch.abs(torch.tensor(eigvalue[1:], requires_grad=False))
+            eigvalue1 -= eps
+            eigvalues[i], idx = torch.sort(eigvalue1)
+            eigvectors[i] = torch.tensor(np.pad(eigvector[:, 1:], [(vertex_count - verts.shape[0], 0), (0, 0)]), requires_grad=False).index_select(-1, idx)  #
+
+        timeframe = torch.logspace(-2, 0, 8)
+        k = ((eigvectors[:, :, :, None] ** 2) * torch.exp(-eigvalues[:, None, :, None] * timeframe.to(device).flatten()[None, None, :]))
+        k = torch.sum(k, 2).transpose(1, 2)
+
+        if k[k>1000].any():
+            broken = True
+        if k.isnan().any():
+            broken = True
+
+        return eigvectors[:, :, :64], eigvalues[:, :64], Ab.detach(), Lb.detach(), k.float().detach(), broken

@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
-
-from LBOEigendecompositionLayer import Spectral as SpectralImplicit
+from LBONet.LBOEigendecompositionLayer import SpectralS as SpectralImplicitS
+from LBONet.LBOEigendecompositionLayer import Spectral as SpectralImplicit
 from LBONet.geometry import get_graph_feature
 import numpy as np
 
@@ -253,7 +253,7 @@ class LBONetImplicitRetrieval(nn.Module):
 
 class LBONetImplicit(nn.Module):
 
-    def __init__(self, Riemann, Anisotropy, Voronoi, debug):
+    def __init__(self, Riemann, Anisotropy, Voronoi, debug=False):
         """
         Construct an LBONet.
 
@@ -496,3 +496,54 @@ class LBONetImplicit(nn.Module):
 
         return hks
 
+
+
+
+class LBONetImplicitS(nn.Module):
+
+    def __init__(self):
+        """
+        Construct a DiffusionNet.
+
+        Parameters:
+            Riemann (int):                      Riemann dimension
+            Anisotropy (int):                   Anisotropy dimension
+            Voronoi (int)                       Voronoi dimension
+        """
+
+        super(LBONetImplicitS, self).__init__()
+
+
+
+    def forward(self, vertices, faces, edges, feature_vector, feature_vectorP, feature_vectorf, el, ts, corners,
+                      minCurvature, maxCurvature, rotationNormal):
+            vertices = vertices.transpose(1, 2)
+            edges = edges.transpose(1, 2)
+            faces = faces.transpose(1, 2)
+
+            evecs, eval, A, L, hks, broken = SpectralImplicitS.apply(vertices, edges, faces, el, el, ts, corners, minCurvature,
+                                                    maxCurvature, rotationNormal, el,
+                                                    el, el, el)
+
+
+            return hks.detach(), evecs, eval, A.detach(), broken
+
+
+class LBOSingle(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.nn = 20
+        self.lambda_param = 1e-3
+
+        self.LBONetImplicit = LBONetImplicitS()
+
+
+    def forward(self, vertices, faces, edges, feature_vector, feature_vectorP, feature_vectorf, el, ts, corners, minCurvature, maxCurvature, rotationNormal):
+            return self.forward_A(vertices, faces, edges, feature_vector, feature_vectorP, feature_vectorf, el, ts,
+                               corners, minCurvature, maxCurvature, rotationNormal)
+    def forward_A(self, vertices, faces, edges, feature_vector, feature_vectorP, feature_vectorf, el, ts, corners,
+                      minCurvature, maxCurvature, rotationNormal):
+
+        hks1, ev1, eval1, A1, broken = self.LBONetImplicit(vertices, faces, edges, feature_vector, feature_vectorP, feature_vectorf, el, ts, corners, minCurvature, maxCurvature, rotationNormal)
+
+        return hks1[0].transpose(1,0).detach(), ev1[0], eval1[0], torch.diag(A1[0]), broken
