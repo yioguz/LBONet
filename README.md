@@ -1,4 +1,4 @@
-# LBONet# LBONet: Supervised Spectral Descriptors for Shape Analysis
+# LBONet: Supervised Spectral Descriptors for Shape Analysis
 
 **GitHub:** [yioguz/LBONet](https://github.com/yioguz/LBONet)  
 **Paper:** [arXiv:2411.08272](https://arxiv.org/abs/2411.08272)
