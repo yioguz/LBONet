@@ -23,9 +23,9 @@ These components adjust the generalized eigenproblem of the LBO in a differentia
 ## 📊 Benchmarks
 
 LBONet achieves strong results on several datasets:
-- **SHREC’11/14/15** – perfect or near-perfect retrieval/classification.
+- **SHREC’11/14/15 ShapeNetCore55** – competitive results in retrieval/classification.
 - **FAUST** – top-performing shape correspondence (low geodesic error).
-- **COSEG, Human Segmentation** – outperforms baselines on segmentation.
+- **COSEG, Human Segmentation, ShapeNet (Part)** – outperforms baselines on segmentation.
 
 ## 🚀 Getting Started
 
