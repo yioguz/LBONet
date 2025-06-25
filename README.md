@@ -1,6 +1,6 @@
 # LBONet: Supervised Spectral Descriptors for Shape Analysis
 
-![LBONet Architecture](arch.png)
+![LBONet Architecture](images/arch.png)
 
 **Authors**: [Oguzhan Yigit](https://oguzhanyigit.com) and [Richard C. Wilson](https://sites.google.com/york.ac.uk/richard-wilson/home)  
 **GitHub**: [yioguz/LBONet](https://github.com/yioguz/LBONet)  
