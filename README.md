@@ -56,7 +56,33 @@ Includes detailed ablation studies showing the effect of each module.
 
 ## 🚀 Getting Started
 
-```bash
-git clone https://github.com/yioguz/LBONet.git
-cd LBONet
-# Follow setup instructions in the README or environment.yml
+## 🧪 Example Forward Pass
+
+Below is a code snippet demonstrating how LBONet can be integrated into another architecture—in this case, a PointNet++-style network—for various downstream tasks. Unlike traditional approaches that use fixed HKS descriptors, LBONet learns task-driven HKS embeddings, adapting the spectral representation to the specific objective.
+
+```python
+def forward(self, vertices, faces, edges, feature_vector, feature_vectorP, feature_vectorf, el, ts,
+            corners, minCurvature, maxCurvature, rotationNormal, cats):
+
+    hks = self.LBONetExplicit(vertices, faces, edges, feature_vector, feature_vectorP,
+                              feature_vectorf, el, ts, corners, minCurvature, maxCurvature, rotationNormal,
+                              cats)
+
+    B, C, N = vertices.shape
+
+    l0_points = hks
+    l0_xyz = vertices.float().cuda()
+    l1_xyz, l1_points = self.sa1(l0_xyz, l0_points)
+    l2_xyz, l2_points = self.sa2(l1_xyz, l1_points)
+    l3_xyz, l3_points = self.sa3(l2_xyz, l2_points)
+    # Feature Propagation layers
+    l2_points = self.fp3(l2_xyz, l3_xyz, l2_points, l3_points)
+    l1_points = self.fp2(l1_xyz, l2_xyz, l1_points, l2_points)
+    cls_label_one_hot = cats.view(B, 16, 1).repeat(1, 1, N)
+    l0_points = self.fp1(l0_xyz, l1_xyz, torch.cat([cls_label_one_hot, l0_xyz, l0_points], 1), l1_points)
+    feat = F.relu(self.bn1(self.conv1(l0_points)))
+    x = self.drop1(feat)
+    x = self.conv2(x)
+    x = F.log_softmax(x, dim=1)
+
+    return x
