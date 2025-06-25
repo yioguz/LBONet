@@ -2,7 +2,7 @@
 
 ![LBONet Architecture](images/arch2.png)
 
-**Authors**: [Oguzhan Yigit] and [Richard C. Wilson](https://sites.google.com/york.ac.uk/richard-wilson/home)  
+**Authors**: [Oguzhan Yigit](https://www.cs.york.ac.uk/people/?group=cvpr&username=oguzhan) and [Richard C. Wilson](https://sites.google.com/york.ac.uk/richard-wilson/home)  
 **GitHub**: [yioguz/LBONet](https://github.com/yioguz/LBONet)  
 **Paper**: [arXiv:2411.08272](https://arxiv.org/abs/2411.08272)
 
