@@ -49,22 +49,21 @@ def process_mesh(pars, maxfaces=3000, resolution = 5000):
         category_id = parts[-4]
         model_id = parts[-3]
         filename = category_id + "_" + model_id
-        vertices_count = 1010
-        edge_count = 3020
-        faces_count = 2010
+
+        vertices_count = 1510
+        edge_count = 4520
+        faces_count = 3010
 
 
         print(f"Processing {i}: {file}")
         v, f = igl.read_triangle_mesh(file, dtypef="float32")
 
-        vOLD, fOLD = pcu.make_mesh_watertight(v, f, resolution*2, seed=5555)
-        vOLD, fOLD = pcu.make_mesh_watertight(vOLD, fOLD, resolution, seed=5555)
+        vOLD, fOLD = pcu.make_mesh_watertight(v, f, resolution, seed=5555)
         mesh = pv.PolyData(vOLD, np.c_[(np.ones(fOLD.shape[0], dtype=np.int32) * 3), fOLD])
         mesh = mesh.smooth(n_iter=10, relaxation_factor=0.01)
         v = mesh.points.copy()
         f = mesh.faces.reshape(-1, 4)[:, 1:].copy()
 
-        print(len(f))
         if len(f)>maxfaces:
             _, v, f, decimated_f_idxs, decimated_i_idxs = igl.decimate(v, f, maxfaces)
 
@@ -84,6 +83,7 @@ def process_mesh(pars, maxfaces=3000, resolution = 5000):
         v = v / scale_factor
         centroid = v.mean(axis=0)
         v = v - centroid
+        
         n = igl.per_vertex_normals(v, f)
         n[np.isnan(n)] = 0
         mesh = Minmesh(v, f)
