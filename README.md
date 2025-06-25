@@ -46,7 +46,7 @@ These are combined to solve a modified LBO eigenproblem in a **differentiable** 
 
 LBONet achieves state-of-the-art or competitive results on:
 
-- **SHREC’11/14/15 ShapeNetCore55** – classification and retrieval  
+- **SHREC’11/14/15/ShapeNetCore55** – classification and retrieval  
 - **FAUST** – dense correspondence  
 - **COSEG / Human Segmentation / ShapeNet Part** – segmentation  
 
