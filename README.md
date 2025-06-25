@@ -54,8 +54,6 @@ Includes detailed ablation studies showing the effect of each module.
 
 ---
 
-## 🚀 Getting Started
-
 ## 🧪 Example Forward Pass
 
 Below is a code snippet demonstrating how LBONet can be integrated into another architecture—in this case, a PointNet++-style network—for various downstream tasks. Unlike traditional approaches that use fixed HKS descriptors, LBONet learns task-driven HKS embeddings, adapting the spectral representation to the specific objective.
@@ -64,7 +62,7 @@ Below is a code snippet demonstrating how LBONet can be integrated into another 
 def forward(self, vertices, faces, edges, feature_vector, feature_vectorP, feature_vectorf, el, ts,
             corners, minCurvature, maxCurvature, rotationNormal, cats):
 
-    hks = self.LBONetExplicit(vertices, faces, edges, feature_vector, feature_vectorP,
+    hks = self.LBONetImplicit(vertices, faces, edges, feature_vector, feature_vectorP,
                               feature_vectorf, el, ts, corners, minCurvature, maxCurvature, rotationNormal,
                               cats)
 
@@ -86,3 +84,8 @@ def forward(self, vertices, faces, edges, feature_vector, feature_vectorP, featu
     x = F.log_softmax(x, dim=1)
 
     return x
+```
+where the layer is initialized with
+
+```python
+self.LBONetExplicit = LBONet.layers.LBONetImplicit(16, 16, 16)
