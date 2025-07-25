@@ -93,6 +93,8 @@ self.LBONetImplicit = LBONet.layers.LBONetImplicit(16, 16, 16)
 
 and the numbers control the width of RiemannNet, ALBO+Net, and VoronoiNet.
 
+The necessary parameters to use with LBONet can be obtained by running the preprocessing script under the preprocessing folder, which will calculate all intrinsic operators necessary. After calculating the task specific LBO and HKS, the HKS can be passed onto any backend.
+
 
 ## 📄 License
 
