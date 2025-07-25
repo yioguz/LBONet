@@ -55,6 +55,8 @@ Includes detailed ablation studies showing the effect of each module.
 ---
 
 ## 🧪 Prerequisites
+LBONet runs on both Apple Silicon and CUDA. The code published here is taken from the CUDA Implementation and requires a fairly recent GPU with CUDA 11 or 12 Support.
+
 ```python
 conda env create --name LBONet -f env.yml
 ```
