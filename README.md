@@ -54,6 +54,10 @@ Includes detailed ablation studies showing the effect of each module.
 
 ---
 
+## 🧪 Prerequisites
+```python
+conda env create --name LBONet -f env.yml
+```
 ## 🧪 Example Forward Pass
 
 Below is a code snippet demonstrating how LBONet can be integrated into another architecture—in this case, a PointNet++-style network—for various downstream tasks. Unlike traditional approaches that use fixed HKS descriptors, LBONet learns task-driven HKS embeddings, adapting the spectral representation to the specific objective.
