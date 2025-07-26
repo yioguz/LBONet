@@ -55,6 +55,8 @@ Includes detailed ablation studies showing the effect of each module.
 ---
 
 ## 🧪 Prerequisites
+LBONet runs on both Apple Silicon and CUDA. The code published here is taken from the CUDA Implementation and requires a fairly recent GPU with CUDA 11 or 12 Support. The following conda environment file can be used to setup the environment.
+
 ```python
 conda env create --name LBONet -f env.yml
 ```
@@ -104,3 +106,7 @@ The necessary parameters to use with LBONet can be obtained by running the prepr
 
 This repository is licensed under the **CC BY-NC-SA 4.0 License**.  
 See the full license [here](https://creativecommons.org/licenses/by-nc-sa/4.0/).
+
+## 📄 Attribution
+
+The Rusinkiewicz curvature calculation is taken from: https://github.com/aymanesouani/curvature_estimation_Rusinkiewicz
