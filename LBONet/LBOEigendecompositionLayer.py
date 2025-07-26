@@ -5,7 +5,7 @@ import numpy as np
 import scipy.sparse.linalg as lg
 
 from LBONet.helpers import tensor_hash, load_from_cache, load_from_cache2, save_to_cache, save_to_cache2
-from RiemannHelpers import plotEdges, plotFacesAnimate, get_cotan_laplacian_igl, get_anisotropic_laplacian, \
+from LBONet.RiemannHelpers import plotEdges, plotFacesAnimate, get_cotan_laplacian_igl, get_anisotropic_laplacian, \
     get_cotan_laplacian_igl_default
 import pyvista as pv
 

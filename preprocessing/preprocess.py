@@ -9,8 +9,12 @@ import torch
 import trimesh
 
 from LBONet import LBOSingle
-from RiemannHelpers import get_curvature2
-from RiemannNetRetrievalShapeNet import Minmesh
+from LBONet.RiemannHelpers import get_curvature2
+
+class Minmesh:
+    def __init__(self, vertices, faces):
+        self.vertices = vertices
+        self.faces = faces
 
 
 def iter_obj_paths(base_dir):

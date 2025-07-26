@@ -15,10 +15,9 @@ import math
 import matplotlib.pyplot as plt
 #import meshplot as mp
 import pyvista as pv
-import CalculCurvature as CC
+import LBONet.CalculCurvature as CC
 import os.path
-
-from pointnet_util import square_distance
+from LBONet.pointnet_util import square_distance
 
 def plotEdges(v, f, c, m):
     verts = f.shape[0]
