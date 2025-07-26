@@ -106,3 +106,7 @@ The necessary parameters to use with LBONet can be obtained by running the prepr
 
 This repository is licensed under the **CC BY-NC-SA 4.0 License**.  
 See the full license [here](https://creativecommons.org/licenses/by-nc-sa/4.0/).
+
+## 📄 Attribution
+
+The Rusinkiewicz curvature calculation is taken from: https://github.com/aymanesouani/curvature_estimation_Rusinkiewicz
