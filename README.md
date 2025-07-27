@@ -62,7 +62,7 @@ conda env create --name LBONet -f env.yml
 ```
 ## 🧪 Example Forward Pass
 
-Below is a code snippet demonstrating how LBONet can be integrated into another architecture—in this case, a PointNet++-style network—for various downstream tasks. Unlike traditional approaches that use fixed HKS descriptors, LBONet learns task-driven HKS embeddings, adapting the spectral representation to the specific objective.
+Below is a code snippet demonstrating how LBONet can be integrated into another architecture—in this case, a PointNet++-style network—for various downstream tasks, backend can be chosen based on preference, as long as gradients backpropagated are informative enough. An auxillary loss such as NT-XENT can help improve performance furhter. Unlike traditional approaches that use fixed HKS descriptors, LBONet learns task-driven HKS embeddings, adapting the spectral representation to the specific objective.
 
 ```python
 def forward(self, vertices, faces, edges, feature_vector, feature_vectorP, feature_vectorf, el, ts,
